@@ -15,39 +15,33 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private String TAG = "MainActivity";
+    private int mNotificationNum = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView notificationTv=(TextView)findViewById(R.id.send_notification_tv);
+        TextView notificationTv = (TextView) findViewById(R.id.send_notification_tv);
         notificationTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"已点击--");
-                Toast.makeText(MainActivity.this,"已点击",Toast.LENGTH_LONG).show();
-                sendNotification(1);
-                sendNotification(2);
-                sendNotification(3);
-                sendNotification(5);
-                sendNotification(6);
-                sendNotification(7);
-                sendNotification(8);
-                sendNotification(9);
-                sendNotification(10);
+                Log.d(TAG, "已点击--");
+                for (int i = 1; i <= mNotificationNum; i++) {
+                    sendNotification(i);
+                }
             }
         });
     }
 
-    public void sendNotification(final int notifyID){
+    public void sendNotification(final int notifyID) {
 
         //第1步：对PendingIntent进行配置：
-        Intent in =new Intent(this,Bactivity.class);
-        PendingIntent pin = PendingIntent.getBroadcast(this,0,in,0);
+        Intent in = new Intent(this, Bactivity.class);
+        PendingIntent pin = PendingIntent.getBroadcast(this, 0, in, 0);
 
         //第2步：实例化通知栏构造器NotificationCompat.Builder：
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-        mBuilder.setContentTitle("测试标题"+notifyID)//设置通知栏标题
+        mBuilder.setContentTitle("测试标题" + notifyID)//设置通知栏标题
                 .setContentText("测试内容")
                 .setContentIntent(pin) //设置通知栏点击意图
 //	.setNumber(number) //设置通知集合的数量
@@ -63,10 +57,10 @@ public class MainActivity extends Activity {
         //第3步：获取状态通知栏管理：
         final NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-       Thread t= new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG,"new Runnable()--run()--notifyID="+notifyID);
+                Log.d(TAG, "new Runnable()--run()--notifyID=" + notifyID);
                 //第4步:发送通知请求
                 mNotificationManager.notify(notifyID, mBuilder.build());
             }
@@ -75,17 +69,12 @@ public class MainActivity extends Activity {
         try {
             t.sleep(2000L);
         } catch (InterruptedException e) {
-            Log.d(TAG,"异常--t.sleep()--");
+            Log.d(TAG, "异常--t.sleep()--");
             e.printStackTrace();
-        }finally {
-            Log.d(TAG,"finally--t.start()--");
+        } finally {
+            Log.d(TAG, "finally--t.start()--");
             t.start();
         }
-
-
-
-//        //第4步:发送通知请求
-//        mNotificationManager.notify(notifyID, mBuilder.build());
 
     }
 

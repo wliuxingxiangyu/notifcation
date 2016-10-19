@@ -17,4 +17,6 @@
         </activity>
     </application>
 
+    <activity android:name=".Bactivity"/>
+
 </manifest>
