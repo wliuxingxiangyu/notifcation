@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
                     mMyTimeTask.cancel();  //将原任务从队列中移除
                 }
                 mMyTimeTask = new MyTimerTask();
-                mTimer.schedule(mMyTimeTask, 3000);//延迟5秒后执行
+                mTimer.schedule(mMyTimeTask, 2000);//延迟5秒后执行
 
             }
         });
@@ -107,7 +107,22 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //做线程 清除资源.
+        Log.d(TAG,"onDestroy()");
+
+    }
+
+    public void release(){
+        if(mMyTimeTask != null){
+            Log.d(TAG,"mMyTimeTask.cancel()");
+            mMyTimeTask.cancel();
+            mMyTimeTask=null;
+        }
+
+        if(mTimer != null){
+            Log.d(TAG,"mTimer.cancel()");
+            mTimer.cancel();
+            mTimer=null;
+        }
     }
 
     final Handler handler = new Handler() {
