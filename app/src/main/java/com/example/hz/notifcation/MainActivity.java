@@ -40,6 +40,8 @@ public class MainActivity extends Activity {
         mNotificationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewLeft2Right(mNotificationEt);
+
                 String notificationNumStr = mNotificationEt.getText().toString();
                 mNotificationNum = Integer.parseInt(notificationNumStr);
                 mNotificationEt.setSelection(0, notificationNumStr.length());
@@ -55,11 +57,17 @@ public class MainActivity extends Activity {
             }
         });
 
-        viewLeft2Right(mNotificationBtn);
+
+        Log.d(TAG,"---宽度v.getWidth()="+mNotificationEt.getWidth()   );
+        Log.d(TAG,"左边距v.getLeft()= "+mNotificationEt.getLeft()  );
     }
 
     public void viewLeft2Right(View v){
         Log.d(TAG,"宽度+左边距 == 右边距"+(v.getWidth()+v.getLeft()  == v.getRight() ));
+        Log.d(TAG,"宽度v.getWidth()="+v.getWidth()   );
+        Log.d(TAG,"左边距v.getLeft()= "+v.getLeft()  );
+        Log.d(TAG,"右边距v.getRight()="+ v.getRight() );
+
     }
 
     public void sendNotification(final int notifyID) {
