@@ -54,6 +54,12 @@ public class MainActivity extends Activity {
 
             }
         });
+
+        viewLeft2Right(mNotificationBtn);
+    }
+
+    public void viewLeft2Right(View v){
+        Log.d(TAG,"宽度+左边距 == 右边距"+(v.getWidth()+v.getLeft()  == v.getRight() ));
     }
 
     public void sendNotification(final int notifyID) {
