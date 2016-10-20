@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
@@ -15,11 +17,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MainActivity extends Activity {
     private String TAG = "MainActivity";
     private int mNotificationNum;
     private Button mNotificationBtn;
     private EditText mNotificationEt;
+    private Timer mTimer ;
+    private MyTimerTask mMyTimeTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +35,8 @@ public class MainActivity extends Activity {
         mNotificationBtn = (Button) findViewById(R.id.send_notification_btn);
         mNotificationEt = (EditText) findViewById(R.id.notification_num_et);
 
+        mTimer = new Timer(true);
+
         mNotificationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -35,9 +44,14 @@ public class MainActivity extends Activity {
                 mNotificationNum = Integer.parseInt(notificationNumStr);
                 mNotificationEt.setSelection(0, notificationNumStr.length());
                 Log.d(TAG, "已点击-即将发送-mNotificationNum=" + mNotificationNum + "条");
-                for (int i = 1; i <= mNotificationNum; i++) {
-                    sendNotification(i);
+
+
+                if(mMyTimeTask != null){
+                    mMyTimeTask.cancel();  //将原任务从队列中移除
                 }
+                mMyTimeTask = new MyTimerTask();
+                mTimer.schedule(mMyTimeTask, 3000);//延迟5秒后执行
+
             }
         });
     }
@@ -67,6 +81,7 @@ public class MainActivity extends Activity {
         final NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         //第4步:发送通知请求
         mNotificationManager.notify(notifyID, mBuilder.build());
+        Log.d(TAG, "发送notifyID=" + notifyID);
 
 //        Thread t = new Thread(new Runnable() {
 //            @Override
@@ -94,4 +109,28 @@ public class MainActivity extends Activity {
         super.onDestroy();
         //做线程 清除资源.
     }
+
+    final Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    //这里加上要执行的方法。
+                    for (int i = 1; i <= mNotificationNum; i++) {
+                        sendNotification(i);
+                    }
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    class MyTimerTask extends TimerTask{
+        public void run() {
+            Message message = new Message();
+            message.what = 1;
+            handler.sendMessage(message);
+        }
+    };
+
+
 }
