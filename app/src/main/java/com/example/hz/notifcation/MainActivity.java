@@ -10,22 +10,31 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private String TAG = "MainActivity";
-    private int mNotificationNum = 5;
+    private int mNotificationNum;
+    private Button mNotificationBtn;
+    private EditText mNotificationEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView notificationTv = (TextView) findViewById(R.id.send_notification_tv);
-        notificationTv.setOnClickListener(new View.OnClickListener() {
+        mNotificationBtn = (Button) findViewById(R.id.send_notification_btn);
+        mNotificationEt = (EditText) findViewById(R.id.notification_num_et);
+
+        mNotificationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "已点击--");
+                String notificationNumStr = mNotificationEt.getText().toString();
+                mNotificationNum = Integer.parseInt(notificationNumStr);
+                mNotificationEt.setSelection(0, notificationNumStr.length());
+                Log.d(TAG, "已点击-即将发送-mNotificationNum=" + mNotificationNum + "条");
                 for (int i = 1; i <= mNotificationNum; i++) {
                     sendNotification(i);
                 }
@@ -56,26 +65,33 @@ public class MainActivity extends Activity {
 
         //第3步：获取状态通知栏管理：
         final NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        //第4步:发送通知请求
+        mNotificationManager.notify(notifyID, mBuilder.build());
 
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "new Runnable()--run()--notifyID=" + notifyID);
-                //第4步:发送通知请求
-                mNotificationManager.notify(notifyID, mBuilder.build());
-            }
-        });
-
-        try {
-            t.sleep(2000L);
-        } catch (InterruptedException e) {
-            Log.d(TAG, "异常--t.sleep()--");
-            e.printStackTrace();
-        } finally {
-            Log.d(TAG, "finally--t.start()--");
-            t.start();
-        }
+//        Thread t = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.d(TAG, "new Runnable()--run()--notifyID=" + notifyID);
+//                //第4步:发送通知请求
+//                mNotificationManager.notify(notifyID, mBuilder.build());
+//            }
+//        });
+//
+//        try {
+//            t.sleep(2000L);
+//        } catch (InterruptedException e) {
+//            Log.d(TAG, "异常--t.sleep()--");
+//            e.printStackTrace();
+//        } finally {
+//            Log.d(TAG, "finally--t.start()--");
+//            t.start();
+//        }
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //做线程 清除资源.
+    }
 }
