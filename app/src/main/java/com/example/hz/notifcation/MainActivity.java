@@ -21,9 +21,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends Activity {
-    private String TAG = "MainActivity";
+    private String TAG = "MainActivity--测试onNewIntent";
     private int mNotificationNum;
-    private Button mNotificationBtn;
+    private Button mNotificationBtn,mToBactivityBtn;
     private EditText mNotificationEt;
     private Timer mTimer ;
     private MyTimerTask mMyTimeTask;
@@ -33,6 +33,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mNotificationBtn = (Button) findViewById(R.id.send_notification_btn);
+        mToBactivityBtn = (Button) findViewById(R.id.to_b_activity_btn);
+
         mNotificationEt = (EditText) findViewById(R.id.notification_num_et);
 
         mTimer = new Timer(true);
@@ -40,7 +42,7 @@ public class MainActivity extends Activity {
         mNotificationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewLeft2Right(mNotificationEt);
+//                viewLeft2Right(mNotificationEt);
 
                 String notificationNumStr = mNotificationEt.getText().toString();
                 mNotificationNum = Integer.parseInt(notificationNumStr);
@@ -53,13 +55,65 @@ public class MainActivity extends Activity {
                 }
                 mMyTimeTask = new MyTimerTask();
                 mTimer.schedule(mMyTimeTask, 2000);//延迟5秒后执行
-
             }
         });
 
+        mToBactivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goBactivity();
+            }
+        });
 
-        Log.d(TAG,"---宽度v.getWidth()="+mNotificationEt.getWidth()   );
-        Log.d(TAG,"左边距v.getLeft()= "+mNotificationEt.getLeft()  );
+    }//onCreate结束
+
+    public void goBactivity(){
+        Log.d(TAG,"goBactivity()--goBactivity()");
+        Intent in = new Intent(this,BActivity.class);
+        startActivity(in);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(TAG,"onNewIntent()");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG,"onRestart()");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG,"onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG,"onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG,"onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG,"按poweroff锁屏-会调-onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy()");
+
     }
 
     public void viewLeft2Right(View v){
@@ -67,13 +121,12 @@ public class MainActivity extends Activity {
         Log.d(TAG,"宽度v.getWidth()="+v.getWidth()   );
         Log.d(TAG,"左边距v.getLeft()= "+v.getLeft()  );
         Log.d(TAG,"右边距v.getRight()="+ v.getRight() );
-
     }
 
     public void sendNotification(final int notifyID) {
 
         //第1步：对PendingIntent进行配置：
-        Intent in = new Intent(this, Bactivity.class);
+        Intent in = new Intent(this, CActivity.class);
         PendingIntent pin = PendingIntent.getBroadcast(this, 0, in, 0);
 
         //第2步：实例化通知栏构造器NotificationCompat.Builder：
@@ -118,12 +171,6 @@ public class MainActivity extends Activity {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG,"onDestroy()");
-
-    }
 
     public void release(){
         if(mMyTimeTask != null){
@@ -160,6 +207,5 @@ public class MainActivity extends Activity {
             handler.sendMessage(message);
         }
     };
-
 
 }

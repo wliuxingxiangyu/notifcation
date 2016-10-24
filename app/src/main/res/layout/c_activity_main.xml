@@ -13,13 +13,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="page b" />
+        android:text="page c" />
 
     <Button
-        android:id="@+id/to_c_activity_btn"
+        android:id="@+id/to_a_activity_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="跳到C界面"
+        android:text="跳到main界面"
         android:textSize="22dp" />
 
 </LinearLayout>
